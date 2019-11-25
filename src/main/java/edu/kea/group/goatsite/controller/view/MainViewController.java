@@ -1,21 +1,20 @@
 package edu.kea.group.goatsite.controller.view;
 
+import edu.kea.group.goatsite.model.Authorization;
 import edu.kea.group.goatsite.model.Goat;
+import edu.kea.group.goatsite.model.Match;
+import edu.kea.group.goatsite.model.Role;
 import edu.kea.group.goatsite.repository.*;
 import edu.kea.group.goatsite.service.AuthorizationService;
-import edu.kea.group.goatsite.model.Match;
-import edu.kea.group.goatsite.repository.GoatRepository;
-import edu.kea.group.goatsite.repository.MatchRepository;
 import edu.kea.group.goatsite.service.GoatService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.*;
+
 import java.security.Principal;
-import java.util.Optional;
 
 
 @Controller
@@ -165,8 +164,43 @@ public class MainViewController {
     // change the role of a user to admin
     @PostMapping("/changerole/{id}")
     public String changeRole(@PathVariable Long id) {
-        authorizationService.changeRole(id);
+        Iterable<Authorization> authorizations = authorizationRepository.findByGoatId(id);
+
+        for (Authorization auth : authorizations) {
+            Long authorizationsCount = authorizationRepository.countByGoatId(id);
+            if (authorizationsCount == 2) {
+                // TODO: Remove admin role
+                System.out.println("User has the following roles:\n" + Role.ROLE_ADMIN + "\n" + Role.ROLE_USER);
+            }
+            if (authorizationsCount == 1) {
+                Authorization newAuthorization = new Authorization();
+                newAuthorization.setRole(Role.ROLE_ADMIN);
+                newAuthorization.setGoatId(auth.getGoatId());
+                authorizationRepository.save(newAuthorization);
+            }
+
+
+
+        }
+
+
+//            if (authorization.getRole().equals(Role.ROLE_USER) && (authorization.getRole().equals(Role.ROLE_ADMIN))) {
+//                System.out.println("Both roles is applied to the user");
+//            }
+//            if (authorization.getRole().equals(Role.ROLE_USER) &&
+//                    (!authorization.getRole().equals(Role.ROLE_ADMIN))) {
+//                System.out.println("Setting role -> ROLE_ADMIN");
+//                authorization.setRole(Role.ROLE_ADMIN);
+//            }
+//            if (authorization.getRole().equals(Role.ROLE_ADMIN) &&
+//                    (!authorization.getRole().equals(Role.ROLE_USER))) {
+//                System.out.println("Setting role -> ROLE_USER");
+//                authorization.setRole(Role.ROLE_USER);
+//
+//                authorizationRepository.save(authorization);
+//        }
+
+
         return "redirect:/listofgoats";
     }
-
 } // closing bracket for class

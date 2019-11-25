@@ -37,6 +37,7 @@
             <th>Name</th>
             <th>Gender</th>
             <th>Date of Birth</th>
+            <th><input onclick="toggleAdminRole()" type="submit" id="bftn" value="Click me please"/></th>
             <th>Short description</th>
             <th>Long description</th>
             <th style="text-align: center">Role</th>
@@ -55,7 +56,7 @@
             <td style="text-align: center"> <div th:each="a : ${goat.authorizations}" th:text="${a.role}"></div> </td>
             <td id="td-options">
                 <form th:action="@{'/changerole/' + ${goat.id}}" method="post">
-                    <input class="btn btn-change-role-to-admin" type="submit" value="Make Admin"/>
+                    <input th:onclick="'toggleAdminRole(\'' + ${goat.id} + '\');'" class="btn btn-change-role-to-admin" type="submit" id="btn" value="Click me please"/>
                 </form>
                 <form th:action="@{'/listofgoats/' + ${goat.id}}" method="post">
                     <input class="btn btn-delete-goat" type="submit" value="Delete"/>
@@ -65,6 +66,7 @@
         </tbody>
     </table>
 </section>
+<script type="text/javascript" src="js/Other.js"></script>
 
 </body>
 </html>

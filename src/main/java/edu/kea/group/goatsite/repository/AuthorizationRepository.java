@@ -8,8 +8,13 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 
+
 @Repository
 public interface AuthorizationRepository extends CrudRepository<Authorization, Long> {
+
+    Iterable<Authorization> findByGoatId(Long id);
+    Long countByGoatId(Long id);
+
 
     @Transactional
     @Modifying
